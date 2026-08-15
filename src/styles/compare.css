@@ -1,0 +1,158 @@
+.compare-pickers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.compare-picker {
+  position: relative;
+}
+
+.compare-picker input {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 15px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.compare-picker input:focus {
+  border-color: var(--green);
+  outline: none;
+}
+
+.compare-results {
+  position: absolute;
+  top: 100%;
+  z-index: 40;
+  width: 100%;
+  margin: 8px 0 0;
+  padding: 7px;
+  list-style: none;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.compare-results button {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  padding: 9px 11px;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  text-align: left;
+}
+
+.compare-results button:hover {
+  background: var(--green-light);
+}
+
+.compare-results strong {
+  color: var(--text);
+  font-size: 14px;
+}
+
+.compare-results span {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.compare-results small {
+  color: var(--green-dark);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.compare-table {
+  margin-bottom: 24px;
+  padding: 6px 22px;
+}
+
+.compare-row {
+  display: grid;
+  grid-template-columns: 140px 1fr 1fr;
+  gap: 16px;
+  align-items: center;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.compare-row:last-child {
+  border-bottom: none;
+}
+
+.compare-row-head strong {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 17px;
+}
+
+.compare-label {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.compare-win {
+  color: var(--green-dark);
+  font-weight: 800;
+}
+
+.compare-win::after {
+  content: " ▲";
+  font-size: 10px;
+}
+
+.compare-chart {
+  padding: 22px;
+}
+
+.compare-chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.compare-legend {
+  display: flex;
+  gap: 14px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.compare-picked {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.compare-picked strong {
+  color: var(--green-dark);
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 800;
+}
+
+.chart-tooltip {
+  display: grid;
+  gap: 3px;
+  padding: 10px 13px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  background: var(--surface);
+  font-size: 12px;
+}
+
+.chart-tooltip-label {
+  color: var(--muted);
+}

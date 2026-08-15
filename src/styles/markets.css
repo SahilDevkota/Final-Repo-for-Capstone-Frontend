@@ -1,0 +1,82 @@
+.stocks-page,
+.search-page,
+.stock-detail-page,
+.profile-page {
+  width: min(1120px, calc(100% - 40px));
+}
+
+.stocks-intro,
+.news-page-intro {
+  max-width: 680px;
+  margin: 16px 0 28px;
+  font-size: 18px;
+}
+
+.asset-search-panel {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 28px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.asset-search-wrapper {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.asset-search-icon {
+  position: absolute;
+  top: 50%;
+  left: 16px;
+  color: var(--green-dark);
+  transform: translateY(-50%);
+}
+
+.asset-search-input {
+  width: 100%;
+  height: 46px;
+  padding: 0 14px 0 44px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.asset-search-input:focus {
+  outline: none;
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px var(--green-light);
+}
+
+.asset-type-select {
+  width: 165px;
+  height: 46px;
+  padding: 0 14px;
+}
+
+.asset-search-panel .asset-type-select {
+  padding-left: 34px;
+  background-image:
+    linear-gradient(var(--green-dark) 2px, transparent 2px),
+    linear-gradient(var(--green-dark) 2px, transparent 2px),
+    linear-gradient(var(--green-dark) 2px, transparent 2px);
+  background-repeat: no-repeat;
+  background-position: 12px 18px, 14px 22px, 16px 26px;
+  background-size: 12px 2px, 8px 2px, 4px 2px;
+}
+
+.asset-search-panel .asset-sort-select {
+  width: 175px;
+  padding-left: 14px;
+  background-image: none;
+}
+
+.asset-list-item:hover {
+  border-color: var(--green);
+  background: var(--green-light);
+}

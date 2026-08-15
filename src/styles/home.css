@@ -1,0 +1,45 @@
+.home-page {
+  padding-top: 90px;
+}
+
+.hero-section {
+  max-width: 770px;
+}
+
+.hero-section h1 {
+  margin-bottom: 28px;
+}
+
+.hero-text {
+  max-width: 650px;
+  margin-bottom: 30px;
+  font-size: 18px;
+}
+
+.hero-actions,
+.dashboard-header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-top: 75px;
+}
+
+.feature-card {
+  padding: 25px;
+}
+
+.feature-card h2 {
+  margin: 15px 0 8px;
+  font-size: 21px;
+}
+
+.feature-icon {
+  color: var(--green);
+  font-size: 28px;
+}

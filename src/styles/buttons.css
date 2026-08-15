@@ -1,0 +1,166 @@
+.primary-link,
+.dashboard-action,
+.auth-card button,
+.profile-settings-form button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 11px;
+  background: var(--green);
+  color: #101609;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.primary-link:hover,
+.dashboard-action:hover,
+.auth-card button:hover,
+.profile-settings-form button:hover {
+  background: var(--green-dark);
+  color: #101609;
+}
+
+.secondary-link,
+.outline-button,
+.quick-action-link,
+.view-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid var(--green);
+  border-radius: 11px;
+  background: var(--surface);
+  color: var(--green-dark);
+  font-weight: 700;
+}
+
+.secondary-link:hover,
+.outline-button:hover,
+.quick-action-link:hover,
+.view-button:hover {
+  background: var(--green-light);
+}
+
+.watchlist-add-button,
+.watchlist-view-all,
+.asset-action-save,
+.portfolio-form button,
+.chat-composer button,
+.tour-next {
+  border: 0;
+  background: var(--green);
+  color: #101609;
+  font-weight: 800;
+}
+
+.watchlist-add-button:hover,
+.watchlist-view-all:hover,
+.asset-action-save:hover:not(:disabled),
+.portfolio-form button:hover,
+.chat-composer button:hover,
+.tour-next:hover {
+  background: var(--green-dark);
+}
+
+.watchlist-add-button {
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 10px;
+  white-space: nowrap;
+}
+
+.watchlist-view-all {
+  width: 100%;
+  min-height: 40px;
+  border: 1px solid var(--green);
+  border-radius: 10px;
+}
+
+.asset-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-top: 18px;
+}
+
+.asset-action-save {
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid var(--green);
+  border-radius: 11px;
+}
+
+.asset-actions button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.read-news-button {
+  min-height: 40px;
+  padding: 0 15px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--green);
+  color: #101609;
+  font-weight: 800;
+}
+
+.read-news-button:hover {
+  background: var(--green-dark);
+}
+
+.profile-upload-button {
+  padding: 8px 12px;
+  border: 1px solid var(--green);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--green-dark);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.remove-picture-button {
+  border: 0;
+  background: transparent;
+  color: var(--red);
+  font-size: 12px;
+}
+
+.profile-logout-button {
+  padding: 10px 15px;
+  border: 1px solid var(--red);
+  border-radius: 9px;
+  background: transparent;
+  color: var(--red);
+}
+
+.delete-account-button {
+  margin-top: 18px;
+  padding: 11px 15px;
+  border: 0;
+  border-radius: 9px;
+  background: var(--red);
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.portfolio-remove-button {
+  min-height: 38px;
+  padding: 0 15px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--red);
+  font-weight: 700;
+}
+
+.portfolio-remove-button:hover:not(:disabled) {
+  border-color: var(--red);
+}

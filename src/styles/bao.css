@@ -1,0 +1,298 @@
+/* Bao's styles.
+
+   Kept in one file rather than spread through the others, so it stays
+   obvious which rules belong to which feature and a re-upload of any
+   single stylesheet cannot quietly drop them.
+
+   PRICE PAGE   chart, range buttons and the session figures
+   PORTFOLIO    allocation bar, and the buys behind a merged position
+   WATCHLIST    the Price button and the row it sits in
+   COMPARE      the note about a thinly traded asset
+*/
+
+.stock-chart-visual {
+  min-height: 350px;
+}
+
+.chart-range-buttons {
+  display: flex;
+  gap: 6px;
+}
+
+.chart-range {
+  padding: 8px 11px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--green-dark);
+  font-size: 12px;
+}
+
+.chart-range.active,
+.chart-range:hover {
+  border-color: var(--green);
+  background: var(--green-light);
+}
+
+.stock-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.stock-stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 19px;
+
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  background: var(--surface);
+}
+
+.stock-stat-card span,
+.company-meta span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.stock-stat-card strong,
+.company-meta strong {
+  color: var(--text);
+  font-size: 17px;
+}
+
+.empty-chart {
+  display: grid;
+  min-height: 220px;
+  place-items: center;
+  border: 1px dashed var(--border);
+  border-radius: 15px;
+  background: var(--soft);
+}
+
+.stock-stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+.stock-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+.compare-thin {
+  margin: 0 0 12px;
+  padding: 9px 13px;
+  border-left: 3px solid var(--chart-a);
+  border-radius: 0 8px 8px 0;
+  background: var(--soft);
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.watchlist-detail-button {
+  min-height: 34px;
+  padding: 0 12px;
+
+  border: 1px solid var(--green);
+  border-radius: 9px;
+  background: transparent;
+  color: var(--green-dark);
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.watchlist-detail-button:hover {
+  background: var(--green-light);
+}
+
+.allocation-bar {
+  display: flex;
+  overflow: hidden;
+  height: 14px;
+  margin-top: 16px;
+  border-radius: 7px;
+  background: var(--soft);
+}
+
+.allocation-slice {
+  height: 100%;
+}
+
+.allocation-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.allocation-stock  { background: var(--chart-a); }
+
+.allocation-etf    { background: var(--chart-b); }
+
+.allocation-crypto { background: #c58bff; }
+
+.allocation-unknown{ background: var(--muted); }
+
+.allocation-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+}
+
+.allocation-legend li {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  color: var(--muted);
+}
+
+.allocation-legend strong {
+  color: var(--text);
+}
+
+.allocation-note {
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.allocation-warn {
+  padding-left: 12px;
+  border-left: 3px solid var(--chart-a);
+  color: var(--text);
+}
+
+.portfolio-buys summary {
+  cursor: pointer;
+  color: var(--green-dark);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.portfolio-buy {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 10px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* ── PRICE PAGE HEADER ───────────────────────────────────────────────
+   Praveen's .stock-detail-header is a fixed light card, and the inner
+   pieces this page uses (.stock-title-row, .market-price-card) no longer
+   exist in his stylesheets. Scoped to .price-page so his own detail page
+   keeps the look he chose. */
+
+.price-page .stock-detail-header {
+  padding: 28px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+/* His card paints a light wash over the whole thing */
+.price-page .stock-detail-header::after {
+  display: none;
+}
+
+.price-page .stock-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.price-page .stock-symbol {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.price-page .stock-title-row h1 {
+  margin: 4px 0 0;
+}
+
+/* Price and its change on one line, with room between them */
+.price-page .market-price-card {
+  display: grid;
+  gap: 6px;
+  justify-items: end;
+  min-width: 180px;
+  padding: 16px 20px;
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  background: var(--soft);
+}
+
+.price-page .market-price-card strong {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 26px;
+  line-height: 1;
+  color: var(--text);
+}
+
+.price-page .market-price-card .profile-label {
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.price-page .positive-change,
+.price-page .negative-change {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.price-page .positive-change { color: var(--green-dark); }
+.price-page .negative-change { color: var(--red); }
+
+@media (width <= 700px) {
+  .price-page .market-price-card {
+    justify-items: start;
+    width: 100%;
+  }
+}
+
+/* ── WATCHLIST BUTTON SPACING ────────────────────────────────────────
+   Price sat against Remove with nothing between them */
+.watchlist-item-buttons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+/* His h1 is #18212d, which is right on his light card and invisible on
+   ours. Same for the eyebrow above it. */
+.price-page .stock-detail-header h1 {
+  color: var(--text);
+  font-size: clamp(1.8rem, 3.4vw, 2.6rem);
+}
+
+.price-page .stock-detail-header .eyebrow {
+  color: var(--green-dark);
+}
+
+/* Note above the auto-filled buy price. It sits between the label and
+   the box, so the box stays on the same line as the other fields. */
+.field-hint {
+  display: block;
+  margin: -2px 0 2px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.35;
+}

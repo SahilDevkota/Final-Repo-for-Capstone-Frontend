@@ -1,0 +1,157 @@
+.assistant-page {
+  min-height: 100vh;
+  padding: 32px 20px 80px;
+  color: #18212f;
+  background: #f6f8fb;
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+.assistant-back-button {
+  border: 0;
+  padding: 0;
+  color: #526174;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+}
+
+.assistant-back-button:hover {
+  color: #2563eb;
+}
+
+.assistant-container {
+  width: min(760px, 100%);
+  margin: 50px auto 0;
+}
+
+.assistant-eyebrow {
+  margin-bottom: 8px;
+  color: #2563eb;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.assistant-container h1 {
+  margin: 0 0 28px;
+  font-size: clamp(2rem, 5vw, 3rem);
+}
+
+.assistant-thinking,
+.assistant-chatbox,
+.assistant-error {
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow:
+    0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.assistant-thinking {
+  display: grid;
+  place-items: center;
+  gap: 12px;
+  min-height: 270px;
+  padding: 35px 20px;
+  text-align: center;
+}
+
+.assistant-thinking h2 {
+  margin: 0;
+  color: #1e3a8a;
+}
+
+.assistant-thinking p {
+  margin: 0;
+  color: #657286;
+}
+
+.assistant-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid #bfdbfe;
+  border-top-color: #2563eb;
+  border-radius: 50%;
+  animation: assistant-spin 0.8s linear infinite;
+}
+
+@keyframes assistant-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.thinking-dots {
+  display: flex;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.thinking-dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #2563eb;
+  animation: assistant-bounce 1s infinite ease-in-out;
+}
+
+.thinking-dots span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.thinking-dots span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes assistant-bounce {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+  }
+
+  30% {
+    transform: translateY(-6px);
+  }
+}
+
+.assistant-error {
+  padding: 22px;
+  color: #b42318;
+  background: #fff5f4;
+}
+
+.assistant-chatbox {
+  overflow: hidden;
+}
+
+.assistant-chatbox-header {
+  padding: 17px 20px;
+  color: #fff;
+  background: #1e3a8a;
+  font-weight: 700;
+}
+
+.online-dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: #34d399;
+}
+
+.assistant-message {
+  min-height: 180px;
+  padding: 24px 20px;
+  color: #26364d;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}

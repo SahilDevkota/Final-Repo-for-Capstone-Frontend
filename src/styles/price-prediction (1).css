@@ -1,0 +1,168 @@
+.price-prediction-page {
+  width: min(1120px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 52px 0 72px;
+}
+
+.price-prediction-page h1 {
+  margin-bottom: 28px;
+  color: var(--text);
+  font-family: "Space Grotesk", sans-serif;
+  font-size: clamp(40px, 6vw, 68px);
+}
+
+.prediction-card,
+.prediction-ai-help {
+  margin-top: 24px;
+  padding: 26px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.prediction-card h2,
+.prediction-ai-help h2 {
+  margin-bottom: 18px;
+  color: var(--text);
+}
+
+.prediction-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.prediction-table {
+  width: 100%;
+  min-width: 650px;
+  border-collapse: collapse;
+}
+
+.prediction-table th,
+.prediction-table td {
+  padding: 14px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  text-align: left;
+}
+
+.prediction-table th {
+  color: var(--green-dark);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.prediction-table td:last-child {
+  color: var(--green-dark);
+  font-weight: 800;
+}
+
+.prediction-chart {
+  width: 100%;
+  min-height: 350px;
+}
+
+.prediction-ai-help {
+  background: var(--green-light);
+}
+
+.prediction-ai-button,
+.prediction-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  margin-top: 18px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 11px;
+  background: var(--green);
+  color: #101609;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.prediction-ai-button:hover,
+.prediction-button:hover {
+  background: var(--green-dark);
+  color: #101609;
+}
+
+.error-message {
+  margin: 20px 0;
+  padding: 14px;
+  border-radius: 10px;
+  background: rgba(216, 74, 93, 0.1);
+  color: var(--red);
+  font-weight: 700;
+}
+
+@media (max-width: 600px) {
+  .price-prediction-page {
+    width: calc(100% - 24px);
+    padding-top: 32px;
+  }
+
+  .prediction-card,
+  .prediction-ai-help {
+    padding: 20px;
+    border-radius: 16px;
+  }
+
+  .prediction-ai-button {
+    width: 100%;
+  }
+}
+
+.prediction-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 240px;
+  margin-top: 30px;
+  padding: 32px;
+  border: 1px solid #dce6c1;
+  border-radius: 16px;
+  background: #f8fbe9;
+  color: #5f7900;
+  text-align: center;
+}
+
+.prediction-loading p {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.loading-subtext {
+  color: #78845c;
+  font-size: 0.9rem;
+}
+
+.prediction-spinner {
+  width: 42px;
+  height: 42px;
+  border: 4px solid #dce6c1;
+  border-top-color: #7aa300;
+  border-radius: 50%;
+  animation: prediction-spin 0.8s linear infinite;
+}
+
+.inline-loading {
+  color: #7aa300;
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+@keyframes prediction-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}

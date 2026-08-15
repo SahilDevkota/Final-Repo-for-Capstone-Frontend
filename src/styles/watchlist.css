@@ -1,0 +1,144 @@
+.watchlist-list,
+.search-results,
+.asset-list,
+.stock-news-list {
+  display: grid;
+  gap: 14px;
+  width: 100%;
+}
+
+.watchlist-item,
+.asset-list-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  min-width: 0;
+  padding: 16px 18px;
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  background: var(--surface);
+}
+
+.watchlist-item:hover,
+.clickable-asset:hover {
+  border-color: var(--green);
+  background: var(--green-light);
+}
+
+.clickable-asset {
+  cursor: pointer;
+}
+
+.watchlist-item-info,
+.asset-list-details {
+  min-width: 0;
+}
+
+.watchlist-item-info strong,
+.asset-list-symbol {
+  display: block;
+  color: var(--green-dark);
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.watchlist-item-info span,
+.watchlist-item-info small,
+.asset-list-details span {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.watchlist-item-info small {
+  margin-top: 4px;
+  font-size: 12px;
+}
+
+.watchlist-item-side {
+  display: grid;
+  align-content: center;
+  justify-items: end;
+  gap: 8px;
+}
+
+.asset-price {
+  color: var(--text);
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.asset-price-waiting {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.watchlist-remove-button {
+  min-height: 34px;
+  align-self: center;
+  padding: 0 12px;
+  border: 1px solid #edb7bf;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--red);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.watchlist-remove-button:hover {
+  background: #fff0f2;
+}
+
+.watchlist-empty-state {
+  display: grid;
+  min-height: 145px;
+  place-items: center;
+  gap: 8px;
+  padding: 24px;
+  border: 1px dashed var(--border);
+  border-radius: 15px;
+  background: var(--soft);
+  text-align: center;
+}
+
+.watchlist-empty-icon {
+  color: var(--green-dark);
+  font-size: 28px;
+}
+
+.watchlist-no-match {
+  padding: 18px;
+  border: 1px dashed var(--border);
+  border-radius: 15px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.asset-list-item {
+  align-items: center;
+  text-decoration: none;
+}
+
+.asset-list-main {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  min-width: 0;
+  text-decoration: none;
+}
+
+.asset-list-details h3 {
+  overflow: hidden;
+  margin-bottom: 4px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.asset-list-arrow {
+  color: var(--green-dark);
+  font-size: 24px;
+}

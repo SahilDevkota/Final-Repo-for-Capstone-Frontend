@@ -1,0 +1,110 @@
+.feature-card,
+.dashboard-section,
+.side-card,
+.alert-panel,
+.news-placeholder,
+.stock-detail-card,
+.stock-chart-card,
+.profile-card,
+.profile-settings-card,
+.delete-account-card,
+.asset-empty-state,
+.portfolio-stat,
+.portfolio-form-card,
+.portfolio-row,
+.compare-table,
+.compare-chart {
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.dashboard-section,
+.side-card {
+  padding: 24px;
+}
+
+.dashboard-section-heading,
+.stock-section-heading,
+.side-card-heading,
+.profile-section-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.dashboard-section-heading a {
+  color: var(--green-dark);
+  font-weight: 800;
+  text-decoration: underline;
+}
+
+.section-coming-soon,
+.alert-status {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.alert-panel {
+  display: flex;
+  gap: 16px;
+  padding: 22px;
+  background: linear-gradient(180deg, var(--green-light), transparent);
+}
+
+.alert-panel-content {
+  min-width: 0;
+}
+
+.alert-panel-icon,
+.news-placeholder-icon,
+.ai-card-icon {
+  display: grid;
+  flex: 0 0 auto;
+  width: 46px;
+  height: 46px;
+  place-items: center;
+  border-radius: 14px;
+  background: var(--green-light);
+  color: var(--green-dark);
+  font-size: 22px;
+}
+
+.news-placeholder {
+  display: flex;
+  gap: 16px;
+  padding: 22px;
+  background: var(--soft);
+}
+
+.asset-empty-state {
+  display: grid;
+  min-height: 230px;
+  place-items: center;
+  padding: 30px;
+  text-align: center;
+}
+
+.asset-loading-spinner {
+  width: 30px;
+  height: 30px;
+  margin-bottom: 16px;
+  border: 3px solid var(--border);
+  border-top-color: var(--green);
+  border-radius: 50%;
+  animation: spin 0.85s linear infinite;
+}
+
+.empty-chart {
+  display: grid;
+  min-height: 220px;
+  place-items: center;
+  border: 1px dashed var(--border);
+  border-radius: 15px;
+  background: var(--soft);
+}

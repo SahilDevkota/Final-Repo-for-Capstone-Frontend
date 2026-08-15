@@ -1,0 +1,113 @@
+.profile-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 22px;
+  margin-bottom: 24px;
+  padding: 25px;
+}
+
+.profile-picture-area {
+  display: flex;
+  grid-row: span 3;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.large-profile-avatar,
+.profile-picture {
+  width: 86px;
+  height: 86px;
+}
+
+.large-profile-avatar {
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--green);
+  color: #101609;
+  font-size: 31px;
+  font-weight: 800;
+}
+
+.profile-picture {
+  border: 2px solid var(--green);
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-label {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.profile-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.active-status {
+  color: var(--green-dark);
+  font-weight: 700;
+}
+
+.profile-logout-button {
+  grid-column: 2;
+  justify-self: start;
+}
+
+.profile-settings-card {
+  margin-bottom: 24px;
+  padding: 25px;
+}
+
+.profile-settings-form {
+  display: grid;
+  gap: 4px;
+}
+
+.delete-account-card {
+  margin-bottom: 24px;
+  padding: 25px;
+  border-color: rgba(216, 74, 93, 0.4);
+}
+
+main > form {
+  width: min(440px, 100%);
+  margin: 0 auto;
+  padding: 34px;
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+main > form h1 {
+  margin-bottom: 12px;
+  font-size: 38px;
+}
+
+main > form p:not(.eyebrow):not(.error-message):not(.success-message) {
+  margin-bottom: 18px;
+}
+
+main > form input {
+  display: block;
+}
+
+main > form button {
+  width: 100%;
+  margin-top: 18px;
+}
+
+main > form a {
+  color: var(--green-dark);
+  font-weight: 800;
+}

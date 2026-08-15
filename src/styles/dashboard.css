@@ -1,0 +1,39 @@
+.dashboard-page {
+  width: min(1180px, calc(100% - 40px));
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 28px;
+  margin-bottom: 34px;
+  padding-top: 20px;
+}
+
+.dashboard-welcome {
+  min-width: 0;
+}
+
+.dashboard-subtitle {
+  max-width: 620px;
+  margin-top: 20px;
+  font-size: 18px;
+}
+
+.dashboard-header-actions {
+  align-self: flex-end;
+}
+
+.dashboard-content,
+.dashboard-single-column {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+.dashboard-main-column,
+.dashboard-side-column {
+  display: grid;
+  gap: 24px;
+  min-width: 0;
+}
