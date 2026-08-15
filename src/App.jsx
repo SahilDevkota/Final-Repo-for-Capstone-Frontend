@@ -17,10 +17,8 @@ import StockDetail from "./auth/StockDetail";
 import PricePrediction from "./auth/PricePrediction";
 import InterestSelection from "./auth/InterestSelection";
 
-import PortfolioPage from "./features/portfolio/PortfolioPage";
 import ComparePage from "./features/compare/ComparePage";
 import PricePage from "./features/price/PricePage";
-import ChatPanel from "./features/assistant/ChatPanel";
 import TutorialPopup from "./features/tutorial/TutorialPopup";
 
 function AppLayout() {
@@ -42,7 +40,6 @@ function AppLayout() {
     <>
       {!hideNavbar && <Navbar />}
 
-      {!hideNavbar && <ChatPanel />}
 
       {!hideNavbar && <TutorialPopup />}
 
@@ -101,11 +98,6 @@ function AppLayout() {
         <Route
           path="/stock/:symbol"
           element={<StockDetail />}
-        />
-
-        <Route
-          path="/portfolio"
-          element={<PortfolioPage />}
         />
 
         <Route
