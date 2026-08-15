@@ -4,16 +4,6 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { fetchCompareAsset, searchAssets, suggestByType } from "../../lib/market";
 import CompareChart from "./CompareChart";
 
-// Two assets side by side.
-//
-//   TABLE   the comparison rows
-//   PICKER  the two search boxes
-//   LOADING one asset per side
-//   PAGE    what gets rendered
-
-// ── TABLE ───────────────────────────────────────────────────────────
-
-// Always en-US: a Vietnamese browser writes 25.32 as "25,325".
 function money(value) {
   if (value == null) return "—";
 
@@ -38,8 +28,6 @@ function score(value) {
   return value == null ? "Not available" : value.toFixed(2);
 }
 
-// Rows of the side-by-side table. `better` decides which side gets the
-// win marker; null means the row is not a contest.
 const ROWS = [
   { label: "Price",     get: (a) => a.price,          format: money,   better: "high" },
   { label: "Today",     get: (a) => a.changePercent,  format: percent, better: "high" },
@@ -48,24 +36,17 @@ const ROWS = [
   { label: "Sentiment", get: (a) => a.sentimentScore, format: score,   better: "high" },
 ];
 
-// ── PICKER ──────────────────────────────────────────────────────────
-// The second slot gets `matchType` once the first is chosen, so it only
-// offers assets of the same kind.
-
 function Picker({ side, value, matchType, exclude, onPick }) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [open, setOpen] = useState(false);
 
-  // Every setState sits inside the timer callback, never in the effect body
   useEffect(() => {
     const q = query.trim();
     let cancelled = false;
 
     const timer = setTimeout(async () => {
       try {
-        // With a type to match, an empty box still lists that type.
-        // Without one, nothing shows until something is typed.
         let found = [];
 
         if (matchType) {
@@ -74,7 +55,6 @@ function Picker({ side, value, matchType, exclude, onPick }) {
           found = await searchAssets(q);
         }
 
-        // Nothing is gained by comparing an asset with itself
         const usable = found.filter((asset) => asset.symbol !== exclude);
 
         if (!cancelled) setResults(usable);
@@ -105,7 +85,7 @@ function Picker({ side, value, matchType, exclude, onPick }) {
         onBlur={() => setTimeout(() => setOpen(false), 150)}
       />
 
-      {/* A placeholder reads as a hint, not a choice */}
+      
       {value && (
         <p className="compare-picked">
           Selected <strong>{value}</strong>
@@ -136,13 +116,7 @@ function Picker({ side, value, matchType, exclude, onPick }) {
   );
 }
 
-// ── LOADING ─────────────────────────────────────────────────────────
-// One side at a time. Loading both together meant nothing arrived until
-// both were chosen, so the second picker never learnt the first one's type.
-
 function useAsset(symbol) {
-  // One piece of state, written only after a request settles, and used
-  // only while it still matches the symbol being asked for.
   const [result, setResult] = useState({ symbol: "", asset: null, failed: false });
 
   useEffect(() => {
@@ -167,8 +141,6 @@ function useAsset(symbol) {
     loading: Boolean(symbol) && !current,
   };
 }
-
-// ── PAGE ────────────────────────────────────────────────────────────
 
 export default function ComparePage() {
   const [params, setParams] = useSearchParams();
@@ -206,8 +178,9 @@ export default function ComparePage() {
           <h1>Compare</h1>
 
           <p className="dashboard-subtitle">
-            Two assets next to each other. Prices are rebased to percent
-            change so a $200 stock and a $90,000 coin stay comparable.
+            Two assets of the same type, side by side. Prices are rebased to
+            percent change, so the one that climbs higher is the one that
+            actually performed better.
           </p>
         </div>
 
@@ -263,7 +236,6 @@ export default function ComparePage() {
               const va = row.get(assetA);
               const vb = row.get(assetB);
 
-              // Only mark a winner when both sides have a number
               let winner = null;
               if (
                 row.better === "high" &&

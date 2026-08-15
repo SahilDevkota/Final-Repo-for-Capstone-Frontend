@@ -1,11 +1,6 @@
-// Shapes the raw responses from ViewerAPI into what the portfolio,
-// compare and assistant screens expect. Kept here so those screens do not
-// each repeat the same parsing.
-
 import { getStocks, getCrypto, getETF, getData } from '../api/ViewerAPI'
 import serviceAPI from '../api/serviceAPI'
 
-// Yahoo labels crypto venues "CCC", which means nothing to a reader
 const EXCHANGES = { CCC: 'Crypto' }
 
 const ASSET_TYPES = {
@@ -47,15 +42,10 @@ export async function fetchQuote(symbol) {
   }
 }
 
-// The stock table holds ETFs too — the CSV it was imported from had no
-// type column — so the table a row came from is not a reliable label.
-// The name is: a fund carries "ETF" in its registered name.
 function assetType(name, fromTable) {
   return /\bETF\b/i.test(name) ? 'ETF' : fromTable
 }
 
-// All three tables at once, since the user does not necessarily know
-// which one a symbol belongs to
 async function searchEveryTable(query) {
   const results = await Promise.allSettled([
     getStocks(query), getCrypto(query), getETF(query),
@@ -83,8 +73,6 @@ export async function searchAssets(query) {
   return (await searchEveryTable(q)).slice(0, 8)
 }
 
-// A month of daily prices for the comparison chart, through our own
-// service rather than the backend, which only returns a single day.
 export async function fetchCompareAsset(symbol, range = '1mo') {
   const { data } = await serviceAPI.get(
     `/market/asset/${encodeURIComponent(symbol)}?range=${range}`
@@ -92,9 +80,6 @@ export async function fetchCompareAsset(symbol, range = '1mo') {
   return data
 }
 
-// Fills the second compare slot. Searching only the matching table would
-// miss the ETFs sitting in the stock table, so search all three and keep
-// what really is the wanted type.
 export async function suggestByType(type, query = '') {
   try {
     const found = await searchEveryTable(query.trim())

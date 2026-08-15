@@ -3,10 +3,7 @@ import { Link } from "react-router-dom";
 
 import { useAuth } from "../api/AuthContext";
 
-
-import { OPEN_CHAT } from "../features/assistant/ChatPanel";
 import { OPEN_TUTORIAL } from "../features/tutorial/TutorialPopup";
-
 
 export default function Navbar() {
   const { user } = useAuth();
@@ -62,6 +59,9 @@ export default function Navbar() {
           Watchlist
         </Link>
 
+        <Link to="/compare" data-tour="tools">
+          Compare
+        </Link>
 
       </div>
 
@@ -92,9 +92,7 @@ export default function Navbar() {
           </span>
         </button>
 
-        {/* ── Bao: Help and Assistant ── start ──────────────────────
-            Both open a panel rendered from App.jsx, so they only fire an
-            event rather than routing anywhere. */}
+        
         <button
           type="button"
           className="help-button"
@@ -106,7 +104,7 @@ export default function Navbar() {
         </button>
 
       
-        {/* ── Bao: Help and Assistant ── end ────────────────────────── */}
+        
 
         <Link
           to="/profile"

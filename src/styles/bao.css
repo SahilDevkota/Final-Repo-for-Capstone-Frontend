@@ -1,15 +1,3 @@
-/* Bao's styles.
-
-   Kept in one file rather than spread through the others, so it stays
-   obvious which rules belong to which feature and a re-upload of any
-   single stylesheet cannot quietly drop them.
-
-   PRICE PAGE   chart, range buttons and the session figures
-   PORTFOLIO    allocation bar, and the buys behind a merged position
-   WATCHLIST    the Price button and the row it sits in
-   COMPARE      the note about a thinly traded asset
-*/
-
 .stock-chart-visual {
   min-height: 350px;
 }
@@ -186,12 +174,6 @@
   font-size: 13px;
 }
 
-/* ── PRICE PAGE HEADER ───────────────────────────────────────────────
-   Praveen's .stock-detail-header is a fixed light card, and the inner
-   pieces this page uses (.stock-title-row, .market-price-card) no longer
-   exist in his stylesheets. Scoped to .price-page so his own detail page
-   keeps the look he chose. */
-
 .price-page .stock-detail-header {
   padding: 28px;
   border: 1px solid var(--border);
@@ -200,7 +182,6 @@
   box-shadow: var(--shadow);
 }
 
-/* His card paints a light wash over the whole thing */
 .price-page .stock-detail-header::after {
   display: none;
 }
@@ -225,7 +206,6 @@
   margin: 4px 0 0;
 }
 
-/* Price and its change on one line, with room between them */
 .price-page .market-price-card {
   display: grid;
   gap: 6px;
@@ -267,16 +247,12 @@
   }
 }
 
-/* ── WATCHLIST BUTTON SPACING ────────────────────────────────────────
-   Price sat against Remove with nothing between them */
 .watchlist-item-buttons {
   display: flex;
   gap: 10px;
   align-items: center;
 }
 
-/* His h1 is #18212d, which is right on his light card and invisible on
-   ours. Same for the eyebrow above it. */
 .price-page .stock-detail-header h1 {
   color: var(--text);
   font-size: clamp(1.8rem, 3.4vw, 2.6rem);
@@ -286,8 +262,6 @@
   color: var(--green-dark);
 }
 
-/* Note above the auto-filled buy price. It sits between the label and
-   the box, so the box stays on the same line as the other fields. */
 .field-hint {
   display: block;
   margin: -2px 0 2px;

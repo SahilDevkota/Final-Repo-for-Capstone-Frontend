@@ -10,8 +10,6 @@ import {
 
 import { useChartColors } from "../../lib/chartTheme";
 
-// Two series on one axis. Prices are rebased to percent change from each
-// series' own first point, so $227 and $96,000 stay comparable.
 function rebase(points) {
   if (!points.length) return new Map();
 
@@ -46,19 +44,14 @@ function Tip({ active, payload, label, labelA, labelB }) {
 export default function CompareChart({ title, seriesA, seriesB, labelA, labelB }) {
   const colors = useChartColors();
 
-  // `date` already arrives as a timestamp from our service
   const toPoints = (series = []) =>
     series.map((item) => ({ t: item.date, value: item.price }));
 
   const a = rebase(toPoints(seriesA));
   const b = rebase(toPoints(seriesB));
 
-  // Union of both timelines so neither series is cut short
   const times = [...new Set([...a.keys(), ...b.keys()])].sort((x, y) => x - y);
 
-  // The series is a month of daily closes, so the axis needs the date. A
-  // fixed en-GB format rather than the browser's, which reorders the day
-  // and month depending on where the reader happens to be.
   const data = times.map((t) => ({
     time: new Date(t).toLocaleDateString("en-GB", {
       day: "2-digit",
@@ -68,8 +61,6 @@ export default function CompareChart({ title, seriesA, seriesB, labelA, labelB }
     b: b.get(t) ?? null,
   }));
 
-  // The range both lines have to fit in. It starts at zero because every
-  // series is rebased from there, so zero is always meaningful.
   let low = 0;
   let high = 0;
 
@@ -82,18 +73,11 @@ export default function CompareChart({ title, seriesA, seriesB, labelA, labelB }
     }
   }
 
-  // Padding on both sides, so a line that never moves is drawn inside the
-  // plot rather than along its top or bottom edge. The floor of 0.3 covers
-  // the case where both series are flat and the range would be zero.
   const padding = Math.max((high - low) * 0.15, 0.3);
   const domain = [low - padding, high + padding];
 
-  // Percent changes are often under 1%, where whole-number ticks collapse
-  // into a column of "0%". One decimal keeps them apart.
   const decimals = high - low < 5 ? 1 : 0;
 
-  // A thinly traded asset returns only a handful of points. One point on
-  // its own draws no line at all, so those series get dots instead.
   const sparse = (series) => series.size > 0 && series.size < 5;
 
   const thin = [

@@ -3,14 +3,10 @@ import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../api/AuthContext";
 
-// Reopened from the Help button; also opens by itself on a first visit
 export const OPEN_TUTORIAL = "open-tutorial";
 
 const SEEN_KEY = "tutorialSeen";
 
-// Each step opens the screen it describes and points at the navbar item
-// that leads there, so the reader knows where to click next time.
-// `anchor` matches a data-tour attribute in Navbar.jsx.
 const STEPS = [
   {
     anchor: "brand",
@@ -32,21 +28,15 @@ const STEPS = [
   },
   {
     anchor: "tools",
-    path: "/portfolio",
-    title: "Track what you own",
-    text: "Under Tools: record what you bought, how much and at what price. Value and profit are recalculated from live prices each time you open it.",
-  },
-  {
-    anchor: "tools",
     path: "/compare",
     title: "Compare two assets",
-    text: "Also under Tools. Prices are rebased to percent change, so a $200 stock and a $90,000 coin stay comparable.",
+    text: "Pick two assets of the same type and see which one performed better over the past month. Both are drawn as percent change, so a difference in price does not get in the way.",
   },
   {
-    anchor: "assistant",
+    anchor: "help",
     path: "/dashboard",
-    title: "Ask the assistant",
-    text: "Ask about your own holdings and watchlist. Every answer shows the data it was based on.",
+    title: "Need this again?",
+    text: "Click Help at any time to replay this tour.",
   },
 ];
 
@@ -57,7 +47,6 @@ export default function TutorialPopup() {
   const navigate = useNavigate();
   const { AccessToken } = useAuth();
 
-  // Read during initialisation, so the first render already knows
   const [open, setOpen] = useState(() => !localStorage.getItem(SEEN_KEY));
   const [step, setStep] = useState(0);
   const [spot, setSpot] = useState(null);
@@ -71,14 +60,10 @@ export default function TutorialPopup() {
     return () => window.removeEventListener(OPEN_TUTORIAL, reopen);
   }, []);
 
-  // Take the reader to the screen this step is about
   useEffect(() => {
     if (open) navigate(STEPS[step].path);
   }, [open, step, navigate]);
 
-  // Measure the navbar item this step points at. setTimeout rather than
-  // requestAnimationFrame: rAF never fires while the tab is not
-  // compositing, which would leave the highlight unplaced.
   useEffect(() => {
     if (!open) return;
 
@@ -89,7 +74,6 @@ export default function TutorialPopup() {
       if (!target) return;
 
       const r = target.getBoundingClientRect();
-      // Tagged with its own anchor so a stale measurement can be spotted
       setSpot({
         anchor,
         top: r.top,
@@ -127,18 +111,13 @@ export default function TutorialPopup() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [open, finish]);
 
-  // The tour explains the signed-in app, so it waits for a session
   if (!open || !AccessToken) return null;
 
   const current = STEPS[step];
   const last = step === STEPS.length - 1;
 
-  // Only trust a measurement taken for the step being shown
   const placed = spot && spot.anchor === current.anchor ? spot : null;
 
-  // Positioned with transform rather than top/left: those are animated,
-  // and a transition from `auto` does not interpolate, so the first frame
-  // would stay pinned at 0,0.
   const cardStyle = placed
     ? {
         transform: `translate(${Math.min(
@@ -150,8 +129,7 @@ export default function TutorialPopup() {
 
   return (
     <>
-      {/* The ring's spread shadow dims the page and leaves this area clear,
-          so one element does both jobs */}
+      
       {placed ? (
         <div
           className="tour-ring"
