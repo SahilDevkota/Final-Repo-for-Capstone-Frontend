@@ -10,7 +10,7 @@ import InvestorDashboard from "./auth/InvestorDashboard";
 import Login from "./auth/Login";
 import Register from "./auth/Register";
 import Profile from "./auth/Profile";
-
+import News from "./auth/News";
 import Stocks from "./auth/Stocks";
 import UserWatchList from "./auth/UserWatchList";
 import StockDetail from "./auth/StockDetail";
@@ -102,6 +102,11 @@ function AppLayout() {
           path="/stock/:symbol"
           element={<StockDetail />}
         />
+
+          <Route
+    path="/news/:symbol"
+    element={<News />}
+  />
 
         <Route
           path="/portfolio"
