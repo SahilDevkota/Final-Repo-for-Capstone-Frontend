@@ -94,7 +94,6 @@ export default function StockDetail() {
 
       if (newsResult.status === "fulfilled") {
         const newsResponse = newsResult.value;
-
         const newsData =
           newsResponse?.data || newsResponse;
 
@@ -122,7 +121,6 @@ export default function StockDetail() {
 
       if (dataResult.status === "fulfilled") {
         const marketResponse = dataResult.value;
-
         const result =
           marketResponse?.chart?.result?.[0];
 
@@ -157,14 +155,16 @@ export default function StockDetail() {
   async function handleSentiment() {
     try {
       setSentimentLoading(true);
-
       setSentiment(null);
 
       await getNews(symbol);
 
       const response = await getSentiment(symbol);
 
-      console.log("Sentiment response:", response);
+      console.log(
+        "Sentiment response:",
+        response
+      );
 
       const sentimentData =
         response?.data || response;
@@ -176,17 +176,17 @@ export default function StockDetail() {
 
       if (Array.isArray(sentimentData)) {
         setSentiment(
-          sentimentData.length > 0
-            ? sentimentData[0]
-            : null
+          sentimentData[0] || null
         );
       } else {
-        setSentiment(sentimentData || null);
+        setSentiment(
+          sentimentData || null
+        );
       }
-    } catch (err) {
+    } catch (error) {
       console.error(
         "Could not get sentiment:",
-        err
+        error
       );
 
       setSentiment(null);
@@ -392,9 +392,7 @@ export default function StockDetail() {
             <button
               type="button"
               className="watchlist-button"
-              onClick={
-                handleWatchlistChange
-              }
+              onClick={handleWatchlistChange}
               disabled={changingWatchlist}
             >
               {changingWatchlist
@@ -419,9 +417,7 @@ export default function StockDetail() {
             <button
               type="button"
               className="compare-button"
-              onClick={
-                handlePricePrediction
-              }
+              onClick={handlePricePrediction}
             >
               Price Prediction
             </button>
@@ -447,28 +443,23 @@ export default function StockDetail() {
 
             <h2>
               {sentiment.sentimentLabel ||
-                sentiment.label ||
                 "Unknown"}
             </h2>
 
             <p>
               Score:{" "}
               {sentiment.sentimentScore ??
-                sentiment.score ??
                 "—"}
             </p>
 
             <p>
               {sentiment.text ||
-                sentiment.headline ||
-                sentiment.summary ||
                 "No sentiment text available."}
             </p>
 
             <p>
               Date:{" "}
               {sentiment.created_at ||
-                sentiment.createdAt ||
                 "—"}
             </p>
           </section>
@@ -543,9 +534,7 @@ export default function StockDetail() {
 
                 <div>
                   <h2>
-                    {getNewsHeadline(
-                      article
-                    )}
+                    {getNewsHeadline(article)}
                   </h2>
 
                   <p className="stock-news-source">
