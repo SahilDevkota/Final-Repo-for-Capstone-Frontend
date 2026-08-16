@@ -13,7 +13,7 @@ import {
   getWatchlist,
   addStockToWatchlist,
   deteleWatchlist,
-  getSentiment
+  getSentiment,
 } from "../api/ViewerAPI";
 
 export default function StockDetail() {
@@ -22,36 +22,18 @@ export default function StockDetail() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [sentiment,setSentiment] = useState(null)
-  const [sentimentLoading,setSentimentLoading] = useState(false)
+  const [sentiment, setSentiment] = useState(null);
+  const [sentimentLoading, setSentimentLoading] = useState(false);
 
-  const [description, setDescription] =
-    useState("");
-
+  const [description, setDescription] = useState("");
   const [news, setNews] = useState([]);
-
-  const [assetName, setAssetName] =
-    useState("");
-
-  const [marketData, setMarketData] =
-    useState({});
-
-  const [isInWatchlist, setIsInWatchlist] =
-    useState(false);
-
-  const [changingWatchlist, setChangingWatchlist] =
-    useState(false);
-
-  const [watchlistMessage, setWatchlistMessage] =
-    useState("");
-
-  const [loading, setLoading] =
-    useState(true);
-
-  
-
-  const [errorMessage, setErrorMessage] =
-    useState("");
+  const [assetName, setAssetName] = useState("");
+  const [marketData, setMarketData] = useState({});
+  const [isInWatchlist, setIsInWatchlist] = useState(false);
+  const [changingWatchlist, setChangingWatchlist] = useState(false);
+  const [watchlistMessage, setWatchlistMessage] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     if (symbol) {
@@ -172,20 +154,44 @@ export default function StockDetail() {
     }
   }
 
-  async function handleSentiment(){
-    try{
+  async function handleSentiment() {
+    try {
       setSentimentLoading(true);
 
-      await getNews(symbol)
+      setSentiment(null);
+
+      await getNews(symbol);
 
       const response = await getSentiment(symbol);
 
-      setSentiment(response[0])
-    }
-    catch(err){
-      console.log("could not get sentiment: ",err)
-    }finally{
-      setSentimentLoading(false )
+      console.log("Sentiment response:", response);
+
+      const sentimentData =
+        response?.data || response;
+
+      console.log(
+        "Sentiment data:",
+        sentimentData
+      );
+
+      if (Array.isArray(sentimentData)) {
+        setSentiment(
+          sentimentData.length > 0
+            ? sentimentData[0]
+            : null
+        );
+      } else {
+        setSentiment(sentimentData || null);
+      }
+    } catch (err) {
+      console.error(
+        "Could not get sentiment:",
+        err
+      );
+
+      setSentiment(null);
+    } finally {
+      setSentimentLoading(false);
     }
   }
 
@@ -255,7 +261,9 @@ export default function StockDetail() {
   }
 
   function handlePricePrediction() {
-    navigate(`/price-prediction/${symbol.toUpperCase()}`);
+    navigate(
+      `/price-prediction/${symbol.toUpperCase()}`
+    );
   }
 
   function handleBack() {
@@ -268,14 +276,11 @@ export default function StockDetail() {
     }
   }
 
-  function handleCompare() {
-    navigate(
-      `/compare?a=${symbol.toUpperCase()}`
-    );
-  }
-
   function formatPrice(value) {
-    if (value === undefined || value === null) {
+    if (
+      value === undefined ||
+      value === null
+    ) {
       return "—";
     }
 
@@ -324,16 +329,6 @@ export default function StockDetail() {
       ""
     );
   }
-
-  function openPredictionPage(stock) {
-  navigate(`/prediction/${stock.symbol}`, {
-    state: {
-      symbol: stock.symbol,
-      currentPrice:
-        stock.currentPrice ?? stock.price,
-    },
-    });
-   }
 
   const currentPrice =
     marketData?.regularMarketPrice;
@@ -385,7 +380,8 @@ export default function StockDetail() {
           </p>
 
           <h1>
-            {assetName || symbol?.toUpperCase()}
+            {assetName ||
+              symbol?.toUpperCase()}
           </h1>
 
           <p className="stock-detail-symbol">
@@ -396,7 +392,9 @@ export default function StockDetail() {
             <button
               type="button"
               className="watchlist-button"
-              onClick={handleWatchlistChange}
+              onClick={
+                handleWatchlistChange
+              }
               disabled={changingWatchlist}
             >
               {changingWatchlist
@@ -406,7 +404,6 @@ export default function StockDetail() {
                   : "Add to watchlist"}
             </button>
 
-          
             <button
               type="button"
               className="compare-button"
@@ -419,41 +416,60 @@ export default function StockDetail() {
               Price details
             </button>
 
-         
             <button
               type="button"
               className="compare-button"
-              onClick = {handlePricePrediction}
+              onClick={
+                handlePricePrediction
+              }
             >
               Price Prediction
             </button>
 
-             <button
+            <button
               type="button"
               className="compare-button"
-              onClick ={handleSentiment}
-              disabled = {sentimentLoading}
+              onClick={handleSentiment}
+              disabled={sentimentLoading}
             >
-              {sentimentLoading ? "Getting sentiment..." : "Get sentiment"}
+              {sentimentLoading
+                ? "Getting sentiment..."
+                : "Get sentiment"}
             </button>
           </div>
         </div>
 
         {sentiment && (
-          <section className = "sentiment-section">
-            <p className = "eyebrow">Market Sentiment</p>
-            <h2>{sentiment.sentimentLabel}</h2>
-
-            <p>
-              Score : {sentiment.sentimentScore}
-            </p>
-            
-            <p>
-              {sentiment.text}
+          <section className="sentiment-section">
+            <p className="eyebrow">
+              MARKET SENTIMENT
             </p>
 
+            <h2>
+              {sentiment.sentimentLabel ||
+                sentiment.label ||
+                "Unknown"}
+            </h2>
+
             <p>
-              Date : {sentiment.created_at}
+              Score:{" "}
+              {sentiment.sentimentScore ??
+                sentiment.score ??
+                "—"}
+            </p>
+
+            <p>
+              {sentiment.text ||
+                sentiment.headline ||
+                sentiment.summary ||
+                "No sentiment text available."}
+            </p>
+
+            <p>
+              Date:{" "}
+              {sentiment.created_at ||
+                sentiment.createdAt ||
+                "—"}
             </p>
           </section>
         )}
@@ -472,9 +488,8 @@ export default function StockDetail() {
               }
             >
               {isPositive ? "+" : ""}
-              {formatPrice(change)}
-              {" "}
-              ({isPositive ? "+" : ""}
+              {formatPrice(change)} (
+              {isPositive ? "+" : ""}
               {changePercent?.toFixed(2)}%)
             </span>
           )}
@@ -486,7 +501,6 @@ export default function StockDetail() {
           {watchlistMessage}
         </p>
       )}
-
 
       <section className="stock-description-section">
         <p className="eyebrow">
@@ -506,12 +520,13 @@ export default function StockDetail() {
 
         {news.length === 0 ? (
           <p>
-            No recent news is available for this
-            asset.
+            No recent news is available for
+            this asset.
           </p>
         ) : (
           news.map((article, index) => {
-            const image = getNewsImage(article);
+            const image =
+              getNewsImage(article);
 
             return (
               <article
@@ -528,11 +543,14 @@ export default function StockDetail() {
 
                 <div>
                   <h2>
-                    {getNewsHeadline(article)}
+                    {getNewsHeadline(
+                      article
+                    )}
                   </h2>
 
                   <p className="stock-news-source">
-                    Source: {getNewsSource(article)}
+                    Source:{" "}
+                    {getNewsSource(article)}
                   </p>
 
                   <p>
