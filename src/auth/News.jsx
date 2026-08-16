@@ -1,49 +1,97 @@
-import { getNews as getNewsList } from "../api/ViewerAPI";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { getMarketNews } from "../api/ViewerAPI";
+import "../styles/news.css";
 
 export default function News() {
-  const [newsArticles, setNewsArticles] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [symbol, setSymbol] =
+    useState("");
 
-  useEffect(() => {
-    async function loadNews() {
-      try {
-        setLoading(true);
-        setError("");
+  const [articles, setArticles] =
+    useState([]);
 
-        const response = await getNewsList();
+  const [loading, setLoading] =
+    useState(false);
 
-        console.log("News response:", response);
-        console.log("News data:", response.data);
+  const [error, setError] =
+    useState("");
 
-        setNewsArticles(response.data);
+  async function loadNews(event) {
+    event.preventDefault();
 
-      } catch (error) {
-        console.error("Could not load news:", error);
-        setError("Could not load news.");
+    const selectedSymbol =
+      symbol.trim().toUpperCase();
 
-      } finally {
-        setLoading(false);
-      }
+    if (!selectedSymbol) {
+      setError("Enter a stock symbol.");
+      return;
     }
 
-    loadNews();
-  }, []);
+    try {
+      setLoading(true);
+      setError("");
+      setArticles([]);
+
+      const data = await getMarketNews(
+        selectedSymbol
+      );
+
+      setArticles(
+        Array.isArray(data) ? data : []
+      );
+    } catch (err) {
+      console.error(
+        "Company news error:",
+        err
+      );
+
+      console.error(
+        "Backend response:",
+        err.response?.data
+      );
+
+      setError(
+        `Could not load news for ${selectedSymbol}.`
+      );
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <main className="news-page">
-
-      <p className="eyebrow">MARKET NEWS</p>
-
-      <h1>Latest News</h1>
-
-      <p className="news-page-intro">
-        Follow the latest market updates, financial
-        developments, and investor sentiment.
+      <p className="eyebrow">
+        STOCK NEWS
       </p>
 
-      {loading && <p>Loading news...</p>}
+      <h1>Company news</h1>
+
+      <p className="news-page-intro">
+        Enter a symbol to view its latest
+        financial news.
+      </p>
+
+      <form
+        className="news-search-form"
+        onSubmit={loadNews}
+      >
+        <input
+          value={symbol}
+          onChange={(event) =>
+            setSymbol(event.target.value)
+          }
+          placeholder="Enter symbol, e.g. AAPL"
+        />
+
+        <button type="submit">
+          Search news
+        </button>
+      </form>
+
+      {loading && (
+        <p className="news-status">
+          Loading news...
+        </p>
+      )}
 
       {error && (
         <p className="error-message">
@@ -51,63 +99,69 @@ export default function News() {
         </p>
       )}
 
-      {!loading && !error && newsArticles.length === 0 && (
-        <p>No news available.</p>
-      )}
+      {!loading &&
+        !error &&
+        symbol &&
+        articles.length === 0 && (
+          <p className="news-status">
+            No news found for{" "}
+            {symbol.toUpperCase()}.
+          </p>
+        )}
 
-      {!loading && !error && newsArticles.length > 0 && (
+      {articles.length > 0 && (
         <section className="news-page-list">
-
-          {newsArticles.map((article, index) => (
+          {articles.map((article, index) => (
             <article
               className="news-page-card"
-              key={index}
+              key={
+                article.url ||
+                article.headline ||
+                index
+              }
             >
-
               <div className="news-page-card-top">
-
                 <span className="news-category">
-                  MARKET NEWS
+                  {article.symbol ||
+                    symbol.toUpperCase()}
                 </span>
 
                 <span className="news-time">
-                  {article.date
-                    ? new Date(article.date).toLocaleString()
-                    : "Today"}
+                  {article.date || ""}
                 </span>
-
               </div>
 
               <h2>
-                {article.title}
+                {article.headline ||
+                  "Company update"}
               </h2>
 
               <p>
-                {article.content}
+                {article.summary ||
+                  "No summary available."}
               </p>
 
-              {article.link && (
-                <button
-                  type="button"
-                  className="read-news-button"
-                  onClick={() =>
-                    window.open(
-                      article.link,
-                      "_blank",
-                      "noopener,noreferrer"
-                    )
-                  }
-                >
-                  Read article
-                </button>
-              )}
+              <div className="news-card-footer">
+                <span className="news-source">
+                  {article.source ||
+                    "Financial news"}
+                </span>
 
+                {article.url && (
+                  <a
+                    className="read-news-button"
+                    href={article.url}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Read article →
+                  </a>
+                )}
+              </div>
             </article>
           ))}
-
         </section>
       )}
-
     </main>
   );
 }

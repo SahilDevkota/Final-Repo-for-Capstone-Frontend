@@ -1,6 +1,6 @@
 import axios from "axios"
 import {refreshEndpoint} from "../api/ViewerAPI"
-const BASE_URL = "http://localhost:8081/"
+const BASE_URL = "https://stock-sentiment-analysis-3.onrender.com/"
 const privateAPI = axios.create({
     baseURL : BASE_URL,
     withCredentials: true
