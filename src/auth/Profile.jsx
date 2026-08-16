@@ -106,12 +106,12 @@ export default function Profile() {
       }
     } catch (error) {
       console.error(
-        "Could not load profile:",
+        "",
         error
       );
 
       setErrorMessage(
-        "Could not load your profile."
+        ""
       );
     } finally {
       setLoading(false);

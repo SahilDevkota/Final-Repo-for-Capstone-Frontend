@@ -103,10 +103,6 @@ function AppLayout() {
           element={<StockDetail />}
         />
 
-          <Route
-    path="/news/:symbol"
-    element={<News />}
-  />
 
         <Route
           path="/portfolio"

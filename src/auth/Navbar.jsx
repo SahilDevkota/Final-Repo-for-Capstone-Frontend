@@ -50,9 +50,7 @@ export default function Navbar() {
       </Link>
 
       <div className="main-nav-links">
-        <Link to="/news" data-tour="news">
-          News
-        </Link>
+        
 
         <Link to="/stocks" data-tour="explore">
           Explore markets
