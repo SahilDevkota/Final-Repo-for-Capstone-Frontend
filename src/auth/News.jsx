@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getMarketNews } from "../api/ViewerAPI";
+import {  getNews } from "../api/ViewerAPI";
 import "../styles/news.css";
 
 export default function News() {
@@ -31,7 +31,7 @@ export default function News() {
       setError("");
       setArticles([]);
 
-      const data = await getMarketNews(
+      const data = await getNews(
         selectedSymbol
       );
 
