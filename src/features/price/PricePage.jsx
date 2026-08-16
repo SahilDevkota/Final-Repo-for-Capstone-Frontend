@@ -55,7 +55,6 @@ export default function PricePage() {
       if (cancelled) return;
 
       setMarketData(asset);
-      setErrorMessage(asset ? "Could not load prices for this asset." : "" );
       setLoading(false);
     };
 

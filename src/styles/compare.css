@@ -8,21 +8,18 @@
   margin-bottom: 30px;
 }
 
-.compare-inputs {
+.compare-pickers {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  gap: 24px;
   margin-bottom: 25px;
 }
 
-.compare-inputs label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 700;
-  color: var(--text);
+.compare-picker {
+  position: relative;
 }
 
-.compare-inputs input {
+.compare-picker input {
   width: 100%;
   height: 48px;
   padding: 0 14px;
@@ -33,17 +30,26 @@
   box-sizing: border-box;
 }
 
-.search-box {
-  position: relative;
+.compare-picker input:focus {
+  outline: none;
+  border-color: var(--green-dark);
 }
 
-.search-results {
+.compare-picked {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.compare-results {
   position: absolute;
   top: 82px;
   left: 0;
   z-index: 10;
   width: 100%;
+  margin: 0;
   padding: 6px;
+  list-style: none;
   border: 1px solid var(--border);
   border-radius: 10px;
   background: var(--surface);
@@ -51,8 +57,16 @@
   box-sizing: border-box;
 }
 
-.search-results button {
-  display: block;
+.compare-results li {
+  margin: 0;
+  padding: 0;
+}
+
+.compare-results button {
+  display: grid;
+  grid-template-columns: 90px 1fr auto;
+  align-items: center;
+  gap: 12px;
   width: 100%;
   padding: 12px;
   border: 0;
@@ -63,11 +77,23 @@
   cursor: pointer;
 }
 
-.search-results button:hover {
+.compare-results button:hover {
   background: var(--green-light);
 }
 
-.compare-message {
+.compare-results button strong {
+  font-weight: 700;
+}
+
+.compare-results button span {
+  color: var(--text);
+}
+
+.compare-results button small {
+  color: var(--muted);
+}
+
+.asset-empty-state {
   padding: 60px 20px;
   border: 1px dashed var(--border);
   border-radius: 16px;
@@ -76,8 +102,18 @@
   text-align: center;
 }
 
-.compare-table-card,
-.compare-chart-card {
+.portfolio-message {
+  padding: 40px 20px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.form-error {
+  margin: 15px 0;
+  color: #c0392b;
+}
+
+.compare-table {
   margin-top: 25px;
   padding: 25px;
   border: 1px solid var(--border);
@@ -86,56 +122,78 @@
   box-shadow: var(--shadow);
 }
 
-.compare-table-card h2,
-.compare-chart-card h2 {
-  margin-bottom: 20px;
-}
-
-.compare-table-card table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.compare-table-card th,
-.compare-table-card td {
-  padding: 14px;
+.compare-row {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr;
+  column-gap: 50px;
+  align-items: center;
+  padding: 16px 20px;
   border-bottom: 1px solid var(--border);
-  text-align: left;
 }
 
-.compare-table-card th {
-  color: var(--green-dark);
-  font-size: 13px;
-  font-weight: 700;
+.compare-row:last-child {
+  border-bottom: none;
 }
 
-.compare-table-card td {
+.compare-row-head {
+  padding-top: 5px;
+  padding-bottom: 20px;
+}
+
+.compare-row-head strong {
+  font-size: 18px;
   color: var(--text);
 }
 
-.compare-chart-card {
-  height: 430px;
+.compare-label {
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.compare-row > span:not(.compare-label) {
+  color: var(--text);
+}
+
+.compare-win {
+  font-weight: 700;
+  color: var(--green-dark) !important;
+}
+
+.compare-chart {
+  margin-top: 25px;
+  padding: 25px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
 }
 
 @media (max-width: 700px) {
   .compare-page {
     width: calc(100% - 24px);
+    padding: 30px 0;
   }
 
-  .compare-inputs {
+  .compare-pickers {
     grid-template-columns: 1fr;
   }
 
-  .compare-table-card,
-  .compare-chart-card {
+  .compare-table {
     padding: 16px;
-  }
-
-  .compare-table-card {
     overflow-x: auto;
   }
 
-  .compare-table-card table {
+  .compare-row {
     min-width: 500px;
+    column-gap: 30px;
+    padding: 14px 10px;
+  }
+
+  .compare-results button {
+    grid-template-columns: 70px 1fr;
+  }
+
+  .compare-results button small {
+    display: none;
   }
 }
