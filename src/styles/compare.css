@@ -60,6 +60,7 @@
   background: transparent;
   color: var(--text);
   text-align: left;
+  cursor: pointer;
 }
 
 .search-results button:hover {
@@ -105,6 +106,7 @@
 .compare-table-card th {
   color: var(--green-dark);
   font-size: 13px;
+  font-weight: 700;
 }
 
 .compare-table-card td {

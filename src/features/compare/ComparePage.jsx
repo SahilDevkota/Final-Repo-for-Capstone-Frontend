@@ -44,8 +44,7 @@ const ROWS = [
   { label: "Price",     get: (a) => a.price,          format: money,   better: "high" },
   { label: "Today",     get: (a) => a.changePercent,  format: percent, better: "high" },
   { label: "Type",      get: (a) => a.type,           format: text,    better: null },
-  { label: "Market",    get: (a) => a.market,         format: text,    better: null },
-  { label: "Sentiment", get: (a) => a.sentimentScore, format: score,   better: "high" },
+  { label: "Market",    get: (a) => a.market,         format: text,    better: null }
 ];
 
 // ── PICKER ──────────────────────────────────────────────────────────
