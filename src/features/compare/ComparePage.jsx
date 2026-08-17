@@ -205,8 +205,9 @@ export default function ComparePage() {
           <h1>Compare</h1>
 
           <p className="dashboard-subtitle">
-            Two assets next to each other. Prices are rebased to percent
-            change so a $200 stock and a $90,000 coin stay comparable.
+            Two assets of the same type, side by side. Prices are rebased to
+            percent change, so the one that climbs higher is the one that
+            actually performed better.
           </p>
         </div>
 
