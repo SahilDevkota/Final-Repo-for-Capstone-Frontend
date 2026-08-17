@@ -14,7 +14,7 @@ import {
   getData,
   getPricePrediction,
   getAIresponse,
-  getHistoricalData
+  getHistoricalData,
 } from "../api/ViewerAPI";
 
 import "../styles/price-prediction.css";
@@ -29,7 +29,9 @@ export default function PricePrediction() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    loadPredictionPage();
+    if (symbol) {
+      loadPredictionPage();
+    }
   }, [symbol]);
 
   async function loadPredictionPage() {
@@ -38,13 +40,17 @@ export default function PricePrediction() {
       setError("");
       setAIResponse("");
 
+      /*
+       * Get historical data first.
+       * This is kept from your original code.
+       */
       await getHistoricalData(symbol);
 
+      /*
+       * Get prediction data
+       */
       const predictionResult =
         await getPricePrediction(symbol);
-
-      const marketResult =
-        await getData(symbol);
 
       console.log(
         "Prediction response:",
@@ -58,16 +64,34 @@ export default function PricePrediction() {
 
       setPredictions(predictionList);
 
+      /*
+       * Get current market data
+       */
+      const marketResult =
+        await getData(symbol);
+
+      console.log(
+        "Market response:",
+        marketResult
+      );
+
       const chartResult =
         marketResult?.chart?.result?.[0];
 
       const marketPrice =
         chartResult?.meta?.regularMarketPrice;
 
+      console.log(
+        "Current market price:",
+        marketPrice
+      );
+
       setCurrentPrice(marketPrice);
 
       if (predictionList.length === 0) {
-        setError("No predictions were returned.");
+        setError(
+          "No predictions were returned."
+        );
       }
 
     } catch (err) {
@@ -81,7 +105,11 @@ export default function PricePrediction() {
         err.response?.data
       );
 
-      setError("Failed to load prediction.");
+      setError(
+        err.response?.data?.detail ||
+        err.response?.data?.message ||
+        "Failed to load prediction."
+      );
     } finally {
       setLoading(false);
     }
@@ -94,22 +122,41 @@ export default function PricePrediction() {
       const response =
         await getAIresponse(symbol);
 
+      console.log(
+        "AI response:",
+        response
+      );
+
       setAIResponse(response);
+
     } catch (err) {
       console.error(
         "AI response error:",
         err
       );
 
-      setError("AI response error");
+      console.error(
+        "Backend response:",
+        err.response?.data
+      );
+
+      setError(
+        err.response?.data?.detail ||
+        err.response?.data?.message ||
+        "AI response error"
+      );
     }
   }
 
+  /*
+   * Chart data
+   */
   const chartData = [
     {
       day: "Current",
       price: Number(currentPrice),
     },
+
     ...predictions.map((item, index) => ({
       day: `Day ${index + 1}`,
       price: Number(
@@ -119,6 +166,11 @@ export default function PricePrediction() {
     })),
   ].filter((item) =>
     Number.isFinite(item.price)
+  );
+
+  console.log(
+    "Chart data:",
+    chartData
   );
 
   if (loading) {
@@ -132,13 +184,16 @@ export default function PricePrediction() {
           {symbol?.toUpperCase()}
         </h1>
 
-        <p>Loading prediction...</p>
+        <p>
+          Loading prediction...
+        </p>
       </main>
     );
   }
 
   return (
     <main className="price-prediction-page">
+
       <p className="eyebrow">
         PRICE PREDICTION
       </p>
@@ -155,10 +210,15 @@ export default function PricePrediction() {
 
       {predictions.length > 0 && (
         <section className="prediction-card">
-          <h2>Five-day prediction</h2>
+
+          <h2>
+            Five-day prediction
+          </h2>
 
           <div className="prediction-table-wrapper">
+
             <table className="prediction-table">
+
               <thead>
                 <tr>
                   <th>Day</th>
@@ -169,58 +229,79 @@ export default function PricePrediction() {
               </thead>
 
               <tbody>
-                {predictions.map((item, index) => {
-                  const predictedPrice =
-                    item.predicted_price ??
-                    item.predictedPrice;
 
-                  return (
-                    <tr key={index}>
-                      <td>
-                        Day {index + 1}
-                      </td>
+                {predictions.map(
+                  (item, index) => {
 
-                      <td>
-                        {item.prediction_date ??
-                          item.predictionDate ??
-                          "Not available"}
-                      </td>
+                    const predictedPrice =
+                      item.predicted_price ??
+                      item.predictedPrice;
 
-                      <td>
-                        {item.predicted_for_date ??
-                          item.predictedForDate ??
-                          "Not available"}
-                      </td>
+                    return (
+                      <tr key={index}>
 
-                      <td>
-                        {predictedPrice !==
-                          undefined &&
-                        predictedPrice !== null
-                          ? Number(
-                              predictedPrice
-                            ).toFixed(2)
-                          : "Not available"}
-                      </td>
-                    </tr>
-                  );
-                })}
+                        <td>
+                          Day {index + 1}
+                        </td>
+
+                        <td>
+                          {item.prediction_date ??
+                            item.predictionDate ??
+                            "Not available"}
+                        </td>
+
+                        <td>
+                          {item.predicted_for_date ??
+                            item.predictedForDate ??
+                            "Not available"}
+                        </td>
+
+                        <td>
+                          {predictedPrice !==
+                            undefined &&
+                          predictedPrice !== null
+                            ? Number(
+                                predictedPrice
+                              ).toFixed(2)
+                            : "Not available"}
+                        </td>
+
+                      </tr>
+                    );
+                  }
+                )}
+
               </tbody>
+
             </table>
+
           </div>
+
         </section>
       )}
 
       {chartData.length > 0 && (
         <section className="prediction-card">
-          <h2>Price prediction chart</h2>
+
+          <h2>
+            Price prediction chart
+          </h2>
 
           <div className="prediction-chart">
+
             <ResponsiveContainer
               width="100%"
               height={350}
             >
-              <LineChart data={chartData}>
-                <XAxis dataKey="day" />
+
+              <LineChart
+                data={chartData}
+              >
+
+                <XAxis
+                  dataKey="day"
+                />
+
                 <YAxis />
 
                 <Tooltip
@@ -236,13 +317,18 @@ export default function PricePrediction() {
                   strokeWidth={3}
                   dot={{ r: 5 }}
                 />
+
               </LineChart>
+
             </ResponsiveContainer>
+
           </div>
+
         </section>
       )}
 
       <section className="prediction-ai-help">
+
         <h2>
           Need more AI assistance?
         </h2>
@@ -255,18 +341,29 @@ export default function PricePrediction() {
         <button
           type="button"
           className="prediction-ai-button"
-          onClick={() => getResponse(symbol)}
+          onClick={() =>
+            getResponse(symbol)
+          }
         >
           Get AI analysis
         </button>
 
         {AIresponse && (
           <div className="ai-response">
-            <h3>AI Analysis</h3>
-            <p>{AIresponse}</p>
+
+            <h3>
+              AI Analysis
+            </h3>
+
+            <p>
+              {AIresponse}
+            </p>
+
           </div>
         )}
+
       </section>
+
     </main>
   );
 }
