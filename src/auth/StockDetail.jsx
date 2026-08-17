@@ -1,545 +1,314 @@
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 import {
-  useLocation,
-  useNavigate,
-  useParams,
-} from "react-router-dom";
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 import {
-  getTitle,
-  getNews,
   getData,
-  getWatchlist,
-  addStockToWatchlist,
-  deteleWatchlist,
-  getSentiment,
+  getPricePrediction,
+  getAIresponse,
 } from "../api/ViewerAPI";
 
-export default function StockDetail() {
+import "../styles/price-prediction.css";
+
+export default function PricePrediction() {
   const { symbol } = useParams();
 
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  const [sentiment, setSentiment] = useState(null);
-  const [sentimentLoading, setSentimentLoading] = useState(false);
-
-  const [description, setDescription] = useState("");
-  const [news, setNews] = useState([]);
-  const [assetName, setAssetName] = useState("");
-  const [marketData, setMarketData] = useState({});
-  const [isInWatchlist, setIsInWatchlist] = useState(false);
-  const [changingWatchlist, setChangingWatchlist] = useState(false);
-  const [watchlistMessage, setWatchlistMessage] = useState("");
+  const [predictions, setPredictions] = useState([]);
+  const [currentPrice, setCurrentPrice] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [AIresponse, setAIResponse] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (symbol) {
-      loadAssetData();
-      checkWatchlist();
+      loadPredictionPage();
     }
   }, [symbol]);
 
-  async function loadAssetData() {
+  async function loadPredictionPage() {
     try {
       setLoading(true);
-      setErrorMessage("");
+      setError("");
+      setAIResponse("");
+      setPredictions([]);
+      setCurrentPrice(null);
 
-      const results = await Promise.allSettled([
-        getTitle(symbol),
-        getNews(symbol),
-        getData(symbol),
-      ]);
+      // Get predictions
+      const predictionResult = await getPricePrediction(symbol);
 
-      const titleResult = results[0];
-      const newsResult = results[1];
-      const dataResult = results[2];
+      console.log("Prediction response:", predictionResult);
 
-      let loadedSomething = false;
+      const predictionList = Array.isArray(predictionResult)
+        ? predictionResult.slice(0, 5)
+        : [];
 
-      if (titleResult.status === "fulfilled") {
-        const titleResponse = titleResult.value;
-        const titleData = titleResponse?.data;
+      setPredictions(predictionList);
 
-        if (
-          titleData &&
-          typeof titleData === "object"
-        ) {
-          setDescription(
-            titleData.extract ||
-              titleData.description ||
-              titleData.summary ||
-              ""
-          );
+      // Get current market data
+      const marketResult = await getData(symbol);
 
-          setAssetName(
-            titleData.title ||
-              titleData.name ||
-              titleData.securityName ||
-              ""
-          );
-        } else {
-          setDescription(titleData || "");
-        }
+      console.log("Market response:", marketResult);
 
-        loadedSomething = true;
-      } else {
-        console.error(
-          "Could not load asset description:",
-          titleResult.reason
-        );
+      const chartResult = marketResult?.chart?.result?.[0];
+
+      const marketPrice =
+        chartResult?.meta?.regularMarketPrice;
+
+      console.log("Current market price:", marketPrice);
+
+      if (
+        marketPrice !== undefined &&
+        marketPrice !== null
+      ) {
+        setCurrentPrice(Number(marketPrice));
       }
 
-      if (newsResult.status === "fulfilled") {
-        const newsResponse = newsResult.value;
-        const newsData =
-          newsResponse?.data || newsResponse;
-
-        if (Array.isArray(newsData)) {
-          setNews(newsData);
-        } else if (
-          Array.isArray(newsData?.articles)
-        ) {
-          setNews(newsData.articles);
-        } else if (
-          Array.isArray(newsData?.news)
-        ) {
-          setNews(newsData.news);
-        } else {
-          setNews([]);
-        }
-
-        loadedSomething = true;
-      } else {
-        console.error(
-          "Could not load asset news:",
-          newsResult.reason
-        );
+      if (predictionList.length === 0) {
+        setError("No predictions were returned.");
       }
 
-      if (dataResult.status === "fulfilled") {
-        const marketResponse = dataResult.value;
-        const result =
-          marketResponse?.chart?.result?.[0];
+    } catch (err) {
+      console.error("Prediction page error:", err);
 
-        setMarketData(result?.meta || {});
-        loadedSomething = true;
-      } else {
-        console.error(
-          "Could not load market data:",
-          dataResult.reason
-        );
-      }
-
-      if (!loadedSomething) {
-        setErrorMessage(
-          "Could not load asset details."
-        );
-      }
-    } catch (error) {
       console.error(
-        "Could not load asset details:",
-        error
+        "Backend response:",
+        err.response?.data
       );
 
-      setErrorMessage(
-        "Could not load asset details."
+      setError(
+        err.response?.data?.detail ||
+        err.response?.data?.message ||
+        "Failed to load prediction."
       );
     } finally {
       setLoading(false);
     }
   }
 
-async function handleSentiment() {
-  try {
-    setSentimentLoading(true);
-    setSentiment(null);
-
-    await getNews(symbol);
-
-    const sentimentData = await getSentiment(symbol);
-
-    console.log("Sentiment data:", sentimentData);
-
-    if (Array.isArray(sentimentData)) {
-      setSentiment(sentimentData[0] || null);
-    } else {
-      setSentiment(sentimentData || null);
-    }
-  } catch (error) {
-    console.error("Could not get sentiment:", error);
-    setSentiment(null);
-  } finally {
-    setSentimentLoading(false);
-  }
-}
-
-  async function checkWatchlist() {
+  async function getResponse(symbol) {
     try {
-      const response = await getWatchlist();
+      setError("");
 
-      const responseData =
-        response?.data || response;
+      const response = await getAIresponse(symbol);
 
-      const assets = Array.isArray(responseData)
-        ? responseData
-        : responseData?.watchlist || [];
+      console.log("AI response:", response);
 
-      const exists = assets.some(
-        (asset) =>
-          asset.symbol?.toUpperCase() ===
-          symbol?.toUpperCase()
-      );
+      setAIResponse(response);
 
-      setIsInWatchlist(exists);
-    } catch (error) {
+    } catch (err) {
+      console.error("AI response error:", err);
+
       console.error(
-        "Could not check watchlist:",
-        error
+        "Backend response:",
+        err.response?.data
+      );
+
+      setError(
+        err.response?.data?.detail ||
+        err.response?.data?.message ||
+        "AI response error"
       );
     }
   }
 
-  async function handleWatchlistChange() {
-    try {
-      setChangingWatchlist(true);
-      setWatchlistMessage("");
+  const chartData = [
+    ...(Number.isFinite(Number(currentPrice))
+      ? [
+          {
+            day: "Current",
+            price: Number(currentPrice),
+          },
+        ]
+      : []),
 
-      if (isInWatchlist) {
-        await deteleWatchlist(symbol);
+    ...predictions
+      .map((item, index) => {
+        const predictedPrice =
+          item?.predicted_price ??
+          item?.predictedPrice;
 
-        setIsInWatchlist(false);
-        setWatchlistMessage(
-          "Removed from watchlist."
-        );
-      } else {
-        await addStockToWatchlist({
-          symbol: symbol.toUpperCase(),
-          securityName:
-            assetName || symbol.toUpperCase(),
-          type: "Stock",
-        });
+        return {
+          day: `Day ${index + 1}`,
+          price: Number(predictedPrice),
+        };
+      })
+      .filter((item) =>
+        Number.isFinite(item.price)
+      ),
+  ];
 
-        setIsInWatchlist(true);
-        setWatchlistMessage(
-          "Added to watchlist."
-        );
-      }
-    } catch (error) {
-      console.error(
-        "Could not update watchlist:",
-        error
-      );
-
-      setWatchlistMessage(
-        "Could not update watchlist."
-      );
-    } finally {
-      setChangingWatchlist(false);
-    }
-  }
-
-  function handlePricePrediction() {
-    navigate(
-      `/price-prediction/${symbol.toUpperCase()}`
-    );
-  }
-
-  function handleBack() {
-    const returnTo = location.state?.returnTo;
-
-    if (returnTo) {
-      navigate(returnTo);
-    } else {
-      navigate("/watchlist");
-    }
-  }
-
-  function formatPrice(value) {
-    if (
-      value === undefined ||
-      value === null
-    ) {
-      return "—";
-    }
-
-    return Number(value).toLocaleString(
-      undefined,
-      {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }
-    );
-  }
-
-  function getNewsHeadline(article) {
-    return (
-      article?.headline ||
-      article?.title ||
-      article?.headlineText ||
-      "Recent market update"
-    );
-  }
-
-  function getNewsSource(article) {
-    return (
-      article?.source ||
-      article?.publisher ||
-      article?.provider ||
-      "Market source"
-    );
-  }
-
-  function getNewsSummary(article) {
-    return (
-      article?.summary ||
-      article?.description ||
-      article?.text ||
-      "No summary available."
-    );
-  }
-
-  function getNewsImage(article) {
-    return (
-      article?.image ||
-      article?.imageUrl ||
-      article?.thumbnail ||
-      article?.thumbnailUrl ||
-      ""
-    );
-  }
-
-  const currentPrice =
-    marketData?.regularMarketPrice;
-
-  const previousClose =
-    marketData?.chartPreviousClose;
-
-  const change =
-    currentPrice !== undefined &&
-    previousClose !== undefined
-      ? currentPrice - previousClose
-      : null;
-
-  const changePercent =
-    change !== null && previousClose
-      ? (change / previousClose) * 100
-      : null;
-
-  const isPositive = change >= 0;
+  console.log("Chart data:", chartData);
 
   if (loading) {
     return (
-      <main className="stock-detail-page">
-        <p>Loading asset details...</p>
+      <main className="price-prediction-page">
+        <p className="eyebrow">
+          PRICE PREDICTION
+        </p>
+
+        <h1>
+          {symbol?.toUpperCase()}
+        </h1>
+
+        <p>Loading prediction...</p>
       </main>
     );
   }
 
   return (
-    <main className="stock-detail-page">
-      {errorMessage && (
+    <main className="price-prediction-page">
+      <p className="eyebrow">
+        PRICE PREDICTION
+      </p>
+
+      <h1>
+        {symbol?.toUpperCase()}
+      </h1>
+
+      {error && (
         <p className="error-message">
-          {errorMessage}
+          {error}
         </p>
       )}
 
-      <button
-        type="button"
-        className="back-button"
-        onClick={handleBack}
-      >
-        ← Back
-      </button>
+      {predictions.length > 0 && (
+        <section className="prediction-card">
+          <h2>Five-day prediction</h2>
 
-      <section className="stock-detail-header">
-        <div className="stock-detail-heading">
-          <p className="eyebrow">
-            MARKET DETAILS
-          </p>
+          <div className="prediction-table-wrapper">
+            <table className="prediction-table">
+              <thead>
+                <tr>
+                  <th>Day</th>
+                  <th>Prediction date</th>
+                  <th>Predicted for</th>
+                  <th>Predicted price</th>
+                </tr>
+              </thead>
 
-          <h1>
-            {assetName ||
-              symbol?.toUpperCase()}
-          </h1>
+              <tbody>
+                {predictions.map((item, index) => {
+                  const predictedPrice =
+                    item?.predicted_price ??
+                    item?.predictedPrice;
 
-          <p className="stock-detail-symbol">
-            {symbol?.toUpperCase()}
-          </p>
+                  return (
+                    <tr key={index}>
+                      <td>
+                        Day {index + 1}
+                      </td>
 
-          <div className="stock-detail-actions">
-            <button
-              type="button"
-              className="watchlist-button"
-              onClick={handleWatchlistChange}
-              disabled={changingWatchlist}
-            >
-              {changingWatchlist
-                ? "Updating..."
-                : isInWatchlist
-                  ? "Remove from watchlist"
-                  : "Add to watchlist"}
-            </button>
+                      <td>
+                        {item?.prediction_date ??
+                          item?.predictionDate ??
+                          "Not available"}
+                      </td>
 
-            <button
-              type="button"
-              className="compare-button"
-              onClick={() =>
-                navigate(
-                  `/price/${symbol.toUpperCase()}`
-                )
-              }
-            >
-              Price details
-            </button>
+                      <td>
+                        {item?.predicted_for_date ??
+                          item?.predictedForDate ??
+                          "Not available"}
+                      </td>
 
-            <button
-              type="button"
-              className="compare-button"
-              onClick={handlePricePrediction}
-            >
-              Price Prediction
-            </button>
-
-            <button
-              type="button"
-              className="compare-button"
-              onClick={handleSentiment}
-              disabled={sentimentLoading}
-            >
-              {sentimentLoading
-                ? "Getting sentiment..."
-                : "Get sentiment"}
-            </button>
+                      <td>
+                        {predictedPrice !== undefined &&
+                        predictedPrice !== null &&
+                        Number.isFinite(
+                          Number(predictedPrice)
+                        )
+                          ? Number(
+                              predictedPrice
+                            ).toFixed(2)
+                          : "Not available"}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
-        </div>
+        </section>
+      )}
 
-        {sentiment && (
-          <section className="sentiment-section">
-            <p className="eyebrow">
-              MARKET SENTIMENT
-            </p>
+      {chartData.length > 0 && (
+        <section className="prediction-card">
+          <h2>Price prediction chart</h2>
 
-            <h2>
-              {sentiment.sentimentLabel ||
-                "Unknown"}
-            </h2>
+          <div
+            className="prediction-chart"
+            style={{
+              width: "100%",
+              height: "350px",
+            }}
+          >
+            <ResponsiveContainer
+              width="100%"
+              height="100%"
+            >
+              <LineChart data={chartData}>
+                <XAxis dataKey="day" />
 
-            <p>
-              Score:{" "}
-              {sentiment.sentimentScore ??
-                "—"}
-            </p>
+                <YAxis />
 
-            <p>
-              {sentiment.text ||
-                "No sentiment text available."}
-            </p>
+                <Tooltip
+                  formatter={(value) =>
+                    Number(value).toFixed(2)
+                  }
+                />
 
-            <p>
-              Date:{" "}
-              {sentiment.created_at ||
-                "—"}
-            </p>
+                <Line
+                  type="monotone"
+                  dataKey="price"
+                  stroke="#7aa300"
+                  strokeWidth={3}
+                  dot={{ r: 5 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </section>
+      )}
+
+      {chartData.length === 0 &&
+        predictions.length === 0 &&
+        !error && (
+          <section className="prediction-card">
+            <p>No prediction data available.</p>
           </section>
         )}
 
-        <div className="stock-price-card">
-          <span className="stock-current-price">
-            {formatPrice(currentPrice)}
-          </span>
-
-          {change !== null && (
-            <span
-              className={
-                isPositive
-                  ? "stock-change positive"
-                  : "stock-change negative"
-              }
-            >
-              {isPositive ? "+" : ""}
-              {formatPrice(change)} (
-              {isPositive ? "+" : ""}
-              {changePercent?.toFixed(2)}%)
-            </span>
-          )}
-        </div>
-      </section>
-
-      {watchlistMessage && (
-        <p className="watchlist-message">
-          {watchlistMessage}
-        </p>
-      )}
-
-      <section className="stock-description-section">
-        <p className="eyebrow">
-          ABOUT THIS ASSET
-        </p>
+      <section className="prediction-ai-help">
+        <h2>
+          Need more AI assistance?
+        </h2>
 
         <p>
-          {description ||
-            "No description available for this asset."}
-        </p>
-      </section>
-
-      <section className="stock-news-section">
-        <p className="eyebrow">
-          RECENT NEWS
+          If you want help understanding
+          these predictions, ask our AI assistant.
         </p>
 
-        {news.length === 0 ? (
-          <p>
-            No recent news is available for
-            this asset.
-          </p>
-        ) : (
-          news.map((article, index) => {
-            const image =
-              getNewsImage(article);
+        <button
+          type="button"
+          className="prediction-ai-button"
+          onClick={() => getResponse(symbol)}
+        >
+          Get AI analysis
+        </button>
 
-            return (
-              <article
-                className="stock-news-item"
-                key={article.id || index}
-              >
-                {image && (
-                  <img
-                    className="stock-news-image"
-                    src={image}
-                    alt=""
-                  />
-                )}
+        {AIresponse && (
+          <div className="ai-response">
+            <h3>AI Analysis</h3>
 
-                <div>
-                  <h2>
-                    {getNewsHeadline(article)}
-                  </h2>
-
-                  <p className="stock-news-source">
-                    Source:{" "}
-                    {getNewsSource(article)}
-                  </p>
-
-                  <p>
-                    {getNewsSummary(article)}
-                  </p>
-
-                  {article?.url && (
-                    <a
-                      href={article.url}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      Read article →
-                    </a>
-                  )}
-                </div>
-              </article>
-            );
-          })
+            <p>{AIresponse}</p>
+          </div>
         )}
       </section>
     </main>
