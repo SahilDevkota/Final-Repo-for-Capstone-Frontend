@@ -60,6 +60,10 @@ export default function Navbar() {
           Watchlist
         </Link>
 
+        <Link to="/compare" data-tour="tools">
+          Compare
+        </Link>
+
 
       </div>
 
