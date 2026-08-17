@@ -14,6 +14,7 @@ import {
   getData,
   getPricePrediction,
   getAIresponse,
+  getHistoricalData,
 } from "../api/ViewerAPI";
 
 import "../styles/price-prediction.css";
@@ -38,45 +39,66 @@ export default function PricePrediction() {
       setLoading(true);
       setError("");
       setAIResponse("");
-      setPredictions([]);
-      setCurrentPrice(null);
 
-      // Get predictions
-      const predictionResult = await getPricePrediction(symbol);
+      /*
+       * Get historical data first.
+       * This is kept from your original code.
+       */
+      await getHistoricalData(symbol);
 
-      console.log("Prediction response:", predictionResult);
+      /*
+       * Get prediction data
+       */
+      const predictionResult =
+        await getPricePrediction(symbol);
 
-      const predictionList = Array.isArray(predictionResult)
-        ? predictionResult.slice(0, 5)
-        : [];
+      console.log(
+        "Prediction response:",
+        predictionResult
+      );
+
+      const predictionList =
+        Array.isArray(predictionResult)
+          ? predictionResult.slice(0, 5)
+          : [];
 
       setPredictions(predictionList);
 
-      // Get current market data
-      const marketResult = await getData(symbol);
+      /*
+       * Get current market data
+       */
+      const marketResult =
+        await getData(symbol);
 
-      console.log("Market response:", marketResult);
+      console.log(
+        "Market response:",
+        marketResult
+      );
 
-      const chartResult = marketResult?.chart?.result?.[0];
+      const chartResult =
+        marketResult?.chart?.result?.[0];
 
       const marketPrice =
         chartResult?.meta?.regularMarketPrice;
 
-      console.log("Current market price:", marketPrice);
+      console.log(
+        "Current market price:",
+        marketPrice
+      );
 
-      if (
-        marketPrice !== undefined &&
-        marketPrice !== null
-      ) {
-        setCurrentPrice(Number(marketPrice));
-      }
+      setCurrentPrice(marketPrice);
 
       if (predictionList.length === 0) {
-        setError("No predictions were returned.");
+        setError(
+          "No predictions were returned."
+        );
       }
 
     } catch (err) {
-      console.error("Prediction page error:", err);
+      console.error(
+        "Prediction page error:",
+        err
+      );
 
       console.error(
         "Backend response:",
@@ -97,14 +119,21 @@ export default function PricePrediction() {
     try {
       setError("");
 
-      const response = await getAIresponse(symbol);
+      const response =
+        await getAIresponse(symbol);
 
-      console.log("AI response:", response);
+      console.log(
+        "AI response:",
+        response
+      );
 
       setAIResponse(response);
 
     } catch (err) {
-      console.error("AI response error:", err);
+      console.error(
+        "AI response error:",
+        err
+      );
 
       console.error(
         "Backend response:",
@@ -119,33 +148,30 @@ export default function PricePrediction() {
     }
   }
 
+  /*
+   * Chart data
+   */
   const chartData = [
-    ...(Number.isFinite(Number(currentPrice))
-      ? [
-          {
-            day: "Current",
-            price: Number(currentPrice),
-          },
-        ]
-      : []),
+    {
+      day: "Current",
+      price: Number(currentPrice),
+    },
 
-    ...predictions
-      .map((item, index) => {
-        const predictedPrice =
-          item?.predicted_price ??
-          item?.predictedPrice;
-
-        return {
-          day: `Day ${index + 1}`,
-          price: Number(predictedPrice),
-        };
-      })
-      .filter((item) =>
-        Number.isFinite(item.price)
+    ...predictions.map((item, index) => ({
+      day: `Day ${index + 1}`,
+      price: Number(
+        item.predicted_price ??
+        item.predictedPrice
       ),
-  ];
+    })),
+  ].filter((item) =>
+    Number.isFinite(item.price)
+  );
 
-  console.log("Chart data:", chartData);
+  console.log(
+    "Chart data:",
+    chartData
+  );
 
   if (loading) {
     return (
@@ -158,13 +184,16 @@ export default function PricePrediction() {
           {symbol?.toUpperCase()}
         </h1>
 
-        <p>Loading prediction...</p>
+        <p>
+          Loading prediction...
+        </p>
       </main>
     );
   }
 
   return (
     <main className="price-prediction-page">
+
       <p className="eyebrow">
         PRICE PREDICTION
       </p>
@@ -181,10 +210,15 @@ export default function PricePrediction() {
 
       {predictions.length > 0 && (
         <section className="prediction-card">
-          <h2>Five-day prediction</h2>
+
+          <h2>
+            Five-day prediction
+          </h2>
 
           <div className="prediction-table-wrapper">
+
             <table className="prediction-table">
+
               <thead>
                 <tr>
                   <th>Day</th>
@@ -195,66 +229,78 @@ export default function PricePrediction() {
               </thead>
 
               <tbody>
-                {predictions.map((item, index) => {
-                  const predictedPrice =
-                    item?.predicted_price ??
-                    item?.predictedPrice;
 
-                  return (
-                    <tr key={index}>
-                      <td>
-                        Day {index + 1}
-                      </td>
+                {predictions.map(
+                  (item, index) => {
 
-                      <td>
-                        {item?.prediction_date ??
-                          item?.predictionDate ??
-                          "Not available"}
-                      </td>
+                    const predictedPrice =
+                      item.predicted_price ??
+                      item.predictedPrice;
 
-                      <td>
-                        {item?.predicted_for_date ??
-                          item?.predictedForDate ??
-                          "Not available"}
-                      </td>
+                    return (
+                      <tr key={index}>
 
-                      <td>
-                        {predictedPrice !== undefined &&
-                        predictedPrice !== null &&
-                        Number.isFinite(
-                          Number(predictedPrice)
-                        )
-                          ? Number(
-                              predictedPrice
-                            ).toFixed(2)
-                          : "Not available"}
-                      </td>
-                    </tr>
-                  );
-                })}
+                        <td>
+                          Day {index + 1}
+                        </td>
+
+                        <td>
+                          {item.prediction_date ??
+                            item.predictionDate ??
+                            "Not available"}
+                        </td>
+
+                        <td>
+                          {item.predicted_for_date ??
+                            item.predictedForDate ??
+                            "Not available"}
+                        </td>
+
+                        <td>
+                          {predictedPrice !==
+                            undefined &&
+                          predictedPrice !== null
+                            ? Number(
+                                predictedPrice
+                              ).toFixed(2)
+                            : "Not available"}
+                        </td>
+
+                      </tr>
+                    );
+                  }
+                )}
+
               </tbody>
+
             </table>
+
           </div>
+
         </section>
       )}
 
       {chartData.length > 0 && (
         <section className="prediction-card">
-          <h2>Price prediction chart</h2>
 
-          <div
-            className="prediction-chart"
-            style={{
-              width: "100%",
-              height: "350px",
-            }}
-          >
+          <h2>
+            Price prediction chart
+          </h2>
+
+          <div className="prediction-chart">
+
             <ResponsiveContainer
               width="100%"
-              height="100%"
+              height={350}
             >
-              <LineChart data={chartData}>
-                <XAxis dataKey="day" />
+
+              <LineChart
+                data={chartData}
+              >
+
+                <XAxis
+                  dataKey="day"
+                />
 
                 <YAxis />
 
@@ -271,21 +317,18 @@ export default function PricePrediction() {
                   strokeWidth={3}
                   dot={{ r: 5 }}
                 />
+
               </LineChart>
+
             </ResponsiveContainer>
+
           </div>
+
         </section>
       )}
 
-      {chartData.length === 0 &&
-        predictions.length === 0 &&
-        !error && (
-          <section className="prediction-card">
-            <p>No prediction data available.</p>
-          </section>
-        )}
-
       <section className="prediction-ai-help">
+
         <h2>
           Need more AI assistance?
         </h2>
@@ -298,19 +341,29 @@ export default function PricePrediction() {
         <button
           type="button"
           className="prediction-ai-button"
-          onClick={() => getResponse(symbol)}
+          onClick={() =>
+            getResponse(symbol)
+          }
         >
           Get AI analysis
         </button>
 
         {AIresponse && (
           <div className="ai-response">
-            <h3>AI Analysis</h3>
 
-            <p>{AIresponse}</p>
+            <h3>
+              AI Analysis
+            </h3>
+
+            <p>
+              {AIresponse}
+            </p>
+
           </div>
         )}
+
       </section>
+
     </main>
   );
 }
