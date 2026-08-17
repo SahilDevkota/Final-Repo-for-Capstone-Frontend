@@ -4,7 +4,7 @@ import { refreshEndpoint } from "./ViewerAPI"
 
 // The Node service under server/ — portfolio and the assistant.
 // Sahil's Spring Boot backend stays on privateAPI; this is separate.
-const BASE_URL = import.meta.env.VITE_SERVICE_URL || "http://localhost:8082/"
+const BASE_URL = import.meta.env.VITE_SERVICE_URL || "https://stock-sentiment-analysis-3.onrender.com/"
 
 const serviceAPI = axios.create({ baseURL: BASE_URL })
 
