@@ -108,7 +108,7 @@ export default function PricePrediction() {
       setError(
         err.response?.data?.detail ||
         err.response?.data?.message ||
-        "Failed to load prediction."
+        ""
       );
     } finally {
       setLoading(false);
