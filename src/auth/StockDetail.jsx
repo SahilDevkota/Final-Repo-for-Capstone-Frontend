@@ -152,48 +152,29 @@ export default function StockDetail() {
     }
   }
 
-  async function handleSentiment() {
-    try {
-      setSentimentLoading(true);
-      setSentiment(null);
+async function handleSentiment() {
+  try {
+    setSentimentLoading(true);
+    setSentiment(null);
 
-      await getNews(symbol);
+    await getNews(symbol);
 
-      const response = await getSentiment(symbol);
+    const sentimentData = await getSentiment(symbol);
 
-      console.log(
-        "Sentiment response:",
-        response
-      );
+    console.log("Sentiment data:", sentimentData);
 
-      const sentimentData =
-        response?.data || response;
-
-      console.log(
-        "Sentiment data:",
-        sentimentData
-      );
-
-      if (Array.isArray(sentimentData)) {
-        setSentiment(
-          sentimentData[0] || null
-        );
-      } else {
-        setSentiment(
-          sentimentData || null
-        );
-      }
-    } catch (error) {
-      console.error(
-        "Could not get sentiment:",
-        error
-      );
-
-      setSentiment(null);
-    } finally {
-      setSentimentLoading(false);
+    if (Array.isArray(sentimentData)) {
+      setSentiment(sentimentData[0] || null);
+    } else {
+      setSentiment(sentimentData || null);
     }
+  } catch (error) {
+    console.error("Could not get sentiment:", error);
+    setSentiment(null);
+  } finally {
+    setSentimentLoading(false);
   }
+}
 
   async function checkWatchlist() {
     try {
